@@ -1,0 +1,15 @@
+/*
+*************
+RBLX Base CSS
+*************
+*/
+
+.headerbg {
+    background: url('https://rublix.io/images/hedge_top_login.png');
+    background-size: cover;
+}
+
+.hedgebackground {
+    background: url('https://rublix.io/images/hedgebg.jpg');
+    background-size: cover;
+}
