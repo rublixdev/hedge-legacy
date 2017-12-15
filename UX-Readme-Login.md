@@ -55,7 +55,7 @@ We want to use Mailchimp API to push registration data into a new mailing list.
 #### Database Table Example Format
 
 | Date       | IP        | Full Name        | Username      | Password (Hash)				     | Email Address   | Phone Number  | Country | Wallet Address | DOB        | Terms |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|------------|-----------|------------------|---------------|------------------------------------|-----------------|---------------|---------|----------------|------------|-------|
 | 11/21/2017 | 127.0.0.1 | Vitalik Burito   | rublixuser    | 5d41402abc4b2a76b9719d911017c592   | info@rublix.io  | 15873789654   | Canada  | 0x000000000000 | 02/15/2017 | Yes   |
 
 #### Form Specs
