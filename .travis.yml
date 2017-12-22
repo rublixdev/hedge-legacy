@@ -1,0 +1,38 @@
+sudo: required
+
+services:
+  - docker
+  - postgresql
+
+language: python
+
+python: 3.5
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.9.0 POSTGRES_DBNAME=starterapp POSTGRES_USER=starterapp POSTGRES_PASSWORD=s3cr3t DJANGO_SECRET_KEY=0123456789abcdef
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - touch .env
+
+install:
+  - pip install -r requirements.txt  
+
+before_script:
+  - psql -c "create database ${POSTGRES_DBNAME};" -U postgres
+  - psql -c "create user ${POSTGRES_USER} with password '${POSTGRES_PASSWORD}';" -U postgres
+  - psql -c "alter user ${POSTGRES_USER} createdb;" -U postgres
+  - psql -c "grant all privileges on database ${POSTGRES_DBNAME} to ${POSTGRES_USER};" -U postgres
+
+script:
+  - python manage.py test
+  - docker-compose build
+  - docker-compose up -d
+  - docker-compose down
+
+notifications:
+  email: false
+  

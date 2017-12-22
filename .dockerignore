@@ -1,0 +1,13 @@
+**/*.DS_Store
+**/*.dockerignore
+**/*.git
+**/*.gitignore
+**/*.pyc
+**/*.log
+**/*.md
+**/*.sqlite3
+**/*.vendors
+**/*__pycache__
+**/*celerybeat-schedule*
+docker-compose.yml
+venv

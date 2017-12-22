@@ -1,0 +1,75 @@
+version: '2'
+
+volumes:
+  postgres_data: {}
+  staticfiles: {}
+
+services:
+  postgres:
+    image: postgres:9.6
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file: .env
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '2'
+
+  redis:
+    image: redis
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '2'
+
+  django:
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - staticfiles:/var/www/static
+      - staticfiles:/var/www/media
+    env_file: .env
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '2'
+    command: /server.sh
+
+  celery:
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - staticfiles:/var/www/media
+    env_file: .env
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '2'
+    command: celery -A config worker --beat -l warning
+
+  nginx:
+    build: ./docker/nginx
+    depends_on:
+      - django
+    volumes:
+      - staticfiles:/var/www/static
+      - staticfiles:/var/www/media
+    ports:
+      - '80:80'
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '2'

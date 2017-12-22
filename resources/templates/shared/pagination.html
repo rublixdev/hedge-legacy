@@ -1,0 +1,19 @@
+{% load commons %}
+{% if items.has_previous or items.has_next %}
+  <nav>
+    <ul class="pager">
+      {% if items.has_previous %}
+      {# Translators: Pagination texts #}
+        <li><a href="?{% append_querystring 'page' items.previous_page_number %}">&larr; {% trans "Prev" %} </a></li>
+      {% else %}
+        <li class="disabled"><a href="?page=1">&larr; {% trans "Prev" %}</a></li>
+      {% endif %}
+      <li> &nbsp; {% trans "Page" %} {{ items.number }} of {{ items.paginator.num_pages }} &nbsp; </li>
+      {% if items.has_next %}
+        <li><a href="?{% append_querystring 'page' items.next_page_number %}">{% trans "Next" %} &rarr;</a></li>
+      {% else %}
+        <li class="disabled"><a href="?page={{ items.paginator.num_pages }}">{% trans "Next" %} &rarr;</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}
