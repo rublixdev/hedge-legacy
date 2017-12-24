@@ -33,14 +33,11 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
 )
 THIRD_PARTY_APPS = (
-    'crispy_forms',
     'anymail',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'django_cleanup',
-    'rest_framework',
-    'rest_framework.authtoken',
 )
 LOCAL_APPS = (
     'apps.user',
@@ -109,16 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Django REST Framework
-# http://www.django-rest-framework.org/
-# ------------------------------------------------------------------------------
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-    ),   
-}
-
 # GENERAL CONFIGURATION
 # ------------------------------------------------------------------------------
 LANGUAGE_CODE = 'en-us'
@@ -161,7 +148,7 @@ ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = False
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/user/login/'
 LOGIN_URL = '/user/login/'
-LOGIN_REDIRECT_URL = '/user/profile/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 
 # CRISPY-FORMS CONFIGURATION
 # ------------------------------------------------------------------------------

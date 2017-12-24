@@ -20,17 +20,12 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from rest_framework.authtoken import views
-
-from apps.user.views import UserCreate
 
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/user/login/')),
     url(r'^user/', include('apps.user.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^api/users/$', UserCreate.as_view()),
-    url(r'^api-token-auth/', views.obtain_auth_token),
 ] 
 
 urlpatterns += staticfiles_urlpatterns()
