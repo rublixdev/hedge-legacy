@@ -24,6 +24,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/user/login/')),
+    url(r'^dashboard/', include('apps.dashboard.urls')),
     url(r'^user/', include('apps.user.urls')),
     url(r'^admin/', admin.site.urls),
 ] 

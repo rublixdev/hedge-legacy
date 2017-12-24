@@ -40,6 +40,7 @@ THIRD_PARTY_APPS = (
     'django_cleanup',
 )
 LOCAL_APPS = (
+    'apps.dashboard',
     'apps.user',
 )
 
