@@ -1060,7 +1060,10 @@
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="pages/login.html">Sign Out</a>
+                            <form method="post" action="{% url 'account_logout' %}" id="form-signout">
+                                {% csrf_token %}
+                            </form>
+                            <a id="signout">Sign Out</a>
                         </li>
                     </ul>
                 </li>
@@ -2680,6 +2683,12 @@
 
     <script src="{% static 'js/plugins-init.js' %}"></script>
     <script src="{% static 'js/switchery-settings.js' %}"></script>
+    <script>
+        $('#signout').click(function(e) {
+            e.preventDefault();
+            $('#form-signout').submit();
+        });
+    </script>
 </body>
 
 </html>
