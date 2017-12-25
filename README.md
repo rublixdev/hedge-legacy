@@ -1,6 +1,8 @@
 Hedge
 =====
 
+The Hedge app. A working demo is available at https://warm-oasis-54877.herokuapp.com.
+
 Run on Development Machine
 --------------------------
 
