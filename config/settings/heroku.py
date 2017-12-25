@@ -4,9 +4,8 @@ from .base import *
 
 # DEBUG
 # ------------------------------------------------------------------------------
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*'] 
-ADMINS = ['nashruddin.amin@gmail.com']
 
 # SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
