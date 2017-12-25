@@ -49,6 +49,7 @@ celerybeat-schedule*
 # App specific #
 ################
 profile_pictures/
+working/
 .idea/
 .vendors/
 .env
