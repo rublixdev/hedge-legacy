@@ -1,39 +1,57 @@
+from hashlib import sha256
+from datetime import datetime
+import re
+
 from django import forms
 from django.contrib.auth.models import User
+from dateutil.relativedelta import relativedelta
 
 from .models import UserProfile
 
 
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ('name', 'picture', 'bio', 'website')
-        widgets = {
-            'bio': forms.Textarea(attrs={'rows': 2}),
-        }
+class SignupForm(forms.Form):
+    name = forms.CharField(min_length=6, max_length=150)
+    phone_number = forms.CharField(min_length=12, max_length=25)
+    wallet_address = forms.CharField()
+    date_of_birth = forms.DateField()
+    terms = forms.BooleanField()
 
-    email = forms.EmailField()
-    user = None
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        if not re.match(r'^[0-9\- ()]+$', phone_number):
+            raise forms.ValidationError('Only numbers, spaces, hyphens, and parentheses allowed.')
+        return phone_number
 
-    def __init__(self, *args, **kwargs):
-        if 'user' not in kwargs:
-            raise Exception('The `user` parameter is required for UserProfileForm.')
-        self.user = kwargs.pop('user')
-        initial = kwargs.setdefault('initial', {})
-        initial['email'] = self.user.email
-        kwargs['instance'] = self.user.profile
-        super(UserProfileForm, self).__init__(*args, **kwargs)
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data['date_of_birth']
+        diff = relativedelta(datetime.now(), dob)
+        if diff.years < 33:
+            raise forms.ValidationError('You have to be 33 years old or older.')
+        return dob
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        if User.objects.filter(email=email).exclude(pk=self.user.id).count():
-            raise forms.ValidationError('This email is already used by other user.')
-        return email
+    def clean_wallet_address(self):
+        def decode_base58(bc, length):
+            digits58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+            n = 0
+            for char in bc:
+                n = n * 58 + digits58.index(char)
+            return n.to_bytes(length, 'big')
 
-    def save(self):
-        super().save()
-        self.user.email = self.cleaned_data['email']
-        self.user.save()
+        address = self.cleaned_data['wallet_address']
+        try:
+            bcbytes = decode_base58(address, 25)
+            if bcbytes[-4:] != sha256(sha256(bcbytes[:-4]).digest()).digest()[:4]:
+                raise ValueError()
+        except Exception:
+            raise forms.ValidationError('Invalid wallet address.')
+        return address
+
+    def signup(self, request, user):
+        user.profile.name = self.cleaned_data['name']
+        user.profile.phone_number = self.cleaned_data['phone_number']
+        user.profile.wallet_address = self.cleaned_data['wallet_address']
+        user.profile.date_of_birth = self.cleaned_data['date_of_birth']
+        user.profile.save()
 
 
 class ChangePasswordForm(forms.Form):

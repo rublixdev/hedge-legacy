@@ -1,13 +1,25 @@
-{% extends 'base.html' %}
+{% extends 'base-unauth.html' %}
+{% load staticfiles %}
 
 {% block head_title %}Verify your email address{% endblock %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-md-4 col-md-offset-4">
-      <h2>Verify your email address</h2>
-      <hr>
+  <div class="panel panel-default b-a-2 no-bg b-gray-dark">
+    <div class="headerbg panel-heading text-center">
+      <a href="#"> <img src="{% static 'img/hedgea_logo.png' %}" alt="Hedge" class="m-t-3 m-b-3"></a>
+    </div>
+    <div class="panel-body">
+      <h2 class="text-center f-w-300 m-b-0" style="letter-spacing:2px;"> Verify Your Email Address</h2>
+      <p class="text-center m-b-3">&nbsp;</p>
+      
       <p>We have sent an email to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.</p>
+
+    </div>
+    <div class="panel-footer b-a-0 b-r-a-0">
+      <a href="{% url 'account_reset_password' %}">Forgot Password?</a>
+      <a href="{% url 'account_login' %}" class="pull-right">Login</a>
     </div>
   </div>
+  <p class="text-gray-light text-center"><strong>Hedge &#x3B1; </strong> <span class="text-gray-light">&#xA9; 2017 Rublix Development</span></p>
+
 {% endblock %}

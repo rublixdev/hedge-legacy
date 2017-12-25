@@ -1,8 +1,8 @@
 $(function() {
     Dashboard.Helpers.elementExists('#daterangepicker-container', function() {
-        $('input[name="daterange-date-and-time"]').daterangepicker();
+        $('input[name="date_of_birth"]').daterangepicker();
 
-        $('input[name="daterange-singe-date-picker"]').daterangepicker({
+        $('input[name="date_of_birth"]').daterangepicker({
             singleDatePicker: true,
             showDropdowns: true
         },

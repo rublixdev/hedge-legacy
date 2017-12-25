@@ -17,6 +17,20 @@ class UserProfile(models.Model):
         blank=True,
         null=True,
     )
+    phone_number = models.CharField(
+        max_length=25,
+        blank=True,
+        null=True,
+    )
+    wallet_address = models.CharField(
+        max_length=55,
+        blank=True,
+        null=True,
+    )
+    date_of_birth = models.DateField(
+        blank=True,
+        null=True,
+    )
     picture = models.ImageField(
         blank=True, 
         null=True, 

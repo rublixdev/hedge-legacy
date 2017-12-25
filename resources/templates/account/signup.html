@@ -9,45 +9,78 @@
     <div class="panel-body">
       <h2 class="text-center f-w-300 m-b-0" style="letter-spacing:2px;">Register</h2>
       <p class="text-center m-b-3">Please fill in the following details to open an account on the Hedge platform.</p>
-      <form>
-        <div class="form-group">
+      
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors.0 }}</div>
+      {% endif %}
+
+      <form method="post" action="{% url 'account_signup' %}" novalidate="">
+        {% csrf_token %}
+        <div class="form-group {% if form.name.errors %}has-error{% endif %}">
           <label>Full Name</label>
-          <input name="fullname" class="form-control" placeholder="First Name and Last Name" required>
+          <input type="text" name="name" value="{{ form.name.value|default:'' }}" class="form-control" placeholder="First Name and Last Name" required>
+          {% if form.name.errors %}
+            <div class="help-block">{{ form.name.errors.0 }}</div>
+          {% endif %}
         </div>
-        <div class="form-group">
+        <div class="form-group {% if form.name.errors %}has-error{% endif %}">
           <label>Username</label>
-          <input name="username" class="form-control" placeholder="Enter a Username" required>
+          <input type="text" name="username" value="{{ form.username.value|default:'' }}" class="form-control" placeholder="Enter a Username" required>
+          {% if form.username.errors %}
+            <div class="help-block">{{ form.username.errors.0 }}</div>
+          {% endif %}
         </div>
-        <div class="form-group">
+        <div class="form-group {% if form.password1.errors %}has-error{% endif %}">
           <label>Password</label>
-          <input name="password" class="form-control" placeholder="Enter a Password" required>
+          <input type="password" name="password1" value="{{ form.password1.value|default:'' }}" class="form-control" placeholder="Enter a Password" required>
+          {% if form.password1.errors %}
+            <div class="help-block">{{ form.password1.errors.0 }}</div>
+          {% endif %}
         </div>
-        <div class="form-group">
+        <div class="form-group {% if form.password2.errors %}has-error{% endif %}">
           <label>Repeat Password</label>
-          <input name="password2" class="form-control" placeholder="Repeat Password" required>
+          <input type="password" name="password2" value="{{ form.password2.value|default:'' }}" class="form-control" placeholder="Repeat Password" required>
+          {% if form.password2.errors %}
+            <div class="help-block">{{ form.password2.errors.0 }}</div>
+          {% endif %}
         </div>
-        <div class="form-group">
+        <div class="form-group {% if form.email.errors %}has-error{% endif %}">
           <label>Email</label>
-          <input name="email" class="form-control" placeholder="Enter an Email Address" required>
+          <input type="text" name="email" value="{{ form.email.value|default:'' }}" class="form-control" placeholder="Enter an Email Address" required>
+          {% if form.email.errors %}
+            <div class="help-block">{{ form.email.errors.0 }}</div>
+          {% endif %}
         </div>
-        <div class="form-group">
+        <div class="form-group {% if form.phone_number.errors %}has-error{% endif %}">
           <label>Phone Number</label>
-          <input name="phone" class="form-control" placeholder="Enter a Phone Number" required>
+          <input type="text" name="phone_number" value="{{ form.phone_number.value|default:'' }}" class="form-control" placeholder="Enter a Phone Number" required>
+          {% if form.phone_number.errors %}
+            <div class="help-block">{{ form.phone_number.errors.0 }}</div>
+          {% endif %}
         </div>
-        <div class="form-group">
+        <div class="form-group {% if form.wallet_address.errors %}has-error{% endif %}">
           <label>Wallet Address</label>
-          <input name="walletid" class="form-control" placeholder="0x0000" required>
+          <input type="text" name="wallet_address" value="{{ form.wallet_address.value|default:'' }}" class="form-control" placeholder="0x0000" required>
+          {% if form.wallet_address.errors %}
+            <div class="help-block">{{ form.wallet_address.errors.0 }}</div>
+          {% endif %}
         </div>
-        <div class="form-group" id="daterangepicker-container">
+        <div class="form-group {% if form.date_of_birth.errors %}has-error{% endif %}" id="daterangepicker-container">
           <label>Date of Birth</label>
-          <input type="text" class="form-control" name="daterange-singe-date-picker" value="10/24/1984">
+          <input type="text" class="form-control" name="date_of_birth" value="{{ form.date_of_birth.value|default:'' }}">
+          {% if form.date_of_birth.errors %}
+            <div class="help-block">{{ form.date_of_birth.errors.0 }}</div>
+          {% endif %}
         </div>
         <div class="checkbox">
           <label>
-          <input name="terms" type="checkbox"> I Accept the Rublix Terms &amp; Privacy Policy
+            <input name="terms" type="checkbox" value="1" {% if form.terms.value %}checked="checked"{% endif %}> I Accept the Rublix Terms &amp; Privacy Policy
           </label>
+          {% if form.terms.errors %}
+            <div class="help-block text-danger">You need check the checkbox above.</div>
+          {% endif %}
         </div>
-        <a href="#" role="button" class="btn m-b-2 btn-block btn-primary">Register</a>
+        <button role="button" class="btn m-b-2 btn-block btn-primary">Register</button>
       </form>
     </div>
     <div class="panel-footer b-a-0 b-r-a-0">
@@ -56,4 +89,10 @@
     </div>
   </div>
   <p class="text-gray-light text-center"><strong>Hedge &#x3B1; </strong> <span class="text-gray-light">&#xA9; 2017 Rublix Development</span></p>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'vendor/js/moment.min.js' %}"></script>
+  <script src="{% static 'vendor/js/daterangepicker.min.js' %}"></script>
+  <script src="{% static 'js/date-range-picker-settings.js' %}"></script>
 {% endblock %}

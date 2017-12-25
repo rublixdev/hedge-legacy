@@ -4,77 +4,60 @@ from os.path import join, dirname, abspath
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from apps.user.forms import UserProfileForm, ChangePasswordForm
+from apps.user.forms import SignupForm, ChangePasswordForm
 from ..base import BaseTests
 
 FIXTURES_DIR = join(dirname(dirname(abspath(__file__))), 'fixtures')
 ASSETS_DIR = join(dirname(dirname(abspath(__file__))), 'assets')
 
 
-class UserProfileFormTests(BaseTests):
-    def setUp(self):
-        super().setUp()
-        self.sample_image = open(os.path.join(ASSETS_DIR, 'sample_image.png'), 'rb')
-        self.sample_textfile = open(os.path.join(ASSETS_DIR, 'lorem.txt'), 'rb')
+class SignupFormTests(BaseTests):
+    def test_with_valid_data(self):
+        form = SignupForm({
+            'name': 'sample user',
+            'phone_number': '082141674751',
+            'wallet_address': '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2',
+            'date_of_birth': '1/1/1970',
+            'terms': '1',
+        })
 
-    def tearDown(self):
-        self.sample_image.close()
-        self.sample_textfile.close()
+        self.assertTrue(form.is_valid())
 
-    def test_form_should_require_user_parameter(self):
-        try:
-            form = UserProfileForm()
-            self.fail('should raise exception here')
-        except Exception: 
-            pass
-        try:
-            form = UserProfileForm(user=self.bob)
-        except Exception:
-            self.fail('Should not raise exception here')
-
-    def test_form_should_define_correct_fields(self):
-        fields = ['name', 'email', 'picture', 'bio', 'website']
-        form = UserProfileForm(user=self.bob)
-
-        self.assertEqual(len(form.fields), len(fields))
-        for field in fields:
-            self.assertTrue(field in form.fields)
-            self.assertIsNotNone(form.fields[field])
-
-    def test_form_should_set_instance_and_initial_email(self):
-        form = UserProfileForm(user=self.bob)
-
-        self.assertEqual(form.instance, self.bob.profile)
-        self.assertEqual(form.initial['email'], self.bob.email)
-
-    def test_with_invalid_data(self):
-        f = self.sample_textfile
-        form = UserProfileForm(
-            dict(email='xxx'),
-            dict(picture=SimpleUploadedFile(f.name, f.read())),
-            user=self.bob,
-        )
+    def test_name_validation(self):
+        form = SignupForm({'name': 'a'})
 
         self.assertFalse(form.is_valid())
         self.assertEqual(
-            form.errors['email'][0], 
-            'Enter a valid email address.',
+            form.errors['name'][0], 
+            'Ensure this value has at least 6 characters (it has 1).',
         )
+
+    def test_phone_number_validation(self):
+        number_tests = [
+            ('123', 'Ensure this value has at least 12 characters (it has 3).'),
+            ('+62 aaa 111 222 333 444', 'Only numbers, spaces, hyphens, and parentheses allowed.'),
+        ]
+
+        for number, errmsg in number_tests:
+            form = SignupForm({'phone_number': number})
+
+            self.assertFalse(form.is_valid())
+            self.assertEqual(form.errors['phone_number'][0], errmsg)
+
+    def test_wallet_address_validation(self):
+        form = SignupForm({'wallet_address': '1AGNa15ZQXAZUgFiqJ3i7Z2DPU2J6hW62i'})
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['wallet_address'][0], 'Invalid wallet address.')
+
+    def test_date_of_birth_validation(self):
+        form = SignupForm({'date_of_birth': '1/1/2017'})
+
+        self.assertFalse(form.is_valid())
         self.assertEqual(
-            form.errors['picture'][0],
-            'Upload a valid image. '
-            'The file you uploaded was either not an image or a corrupted image.',
+            form.errors['date_of_birth'][0],
+            'You have to be 33 years old or older.',
         )
-
-    def test_with_valid_data(self):
-        f = self.sample_image
-        form = UserProfileForm(
-            dict(email='user@example.com'),
-            dict(picture=SimpleUploadedFile(f.name, f.read())),
-            user=self.bob,
-        )
-
-        self.assertTrue(form.is_valid())
 
 
 class ChangePasswordFormTests(BaseTests):
