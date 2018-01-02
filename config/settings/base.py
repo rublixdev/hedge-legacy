@@ -163,3 +163,8 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# MAILCHIMP CAMPAIGN 
+# ------------------------------------------------------------------------------
+MAILCHIMP_API_KEY = env('MAILCHIMP_API_KEY')
+MAILCHIMP_LIST_ID = env('MAILCHIMP_LIST_ID')
