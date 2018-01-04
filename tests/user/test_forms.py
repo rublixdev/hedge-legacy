@@ -23,6 +23,16 @@ class SignupFormTests(BaseTests):
 
         self.assertTrue(form.is_valid())
 
+        form = SignupForm({
+            'name': 'sample user',
+            'phone_number': '082141674751',
+            'wallet_address': '0x32Be343B94f860124dC4fEe278FDCBD38C102D88',
+            'date_of_birth': '1/1/1970',
+            'terms': '1',
+        })
+
+        self.assertTrue(form.is_valid())
+
     def test_name_validation(self):
         form = SignupForm({'name': 'a'})
 
@@ -44,8 +54,14 @@ class SignupFormTests(BaseTests):
             self.assertFalse(form.is_valid())
             self.assertEqual(form.errors['phone_number'][0], errmsg)
 
-    def test_wallet_address_validation(self):
+    def test_bitcoin_address_validation(self):
         form = SignupForm({'wallet_address': '1AGNa15ZQXAZUgFiqJ3i7Z2DPU2J6hW62i'})
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['wallet_address'][0], 'Invalid wallet address.')
+
+    def test_ethereum_address_validation(self):
+        form = SignupForm({'wallet_address': '0x32Be343B94f860124dC4fEe278FDCBD38C102D8j'})
 
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['wallet_address'][0], 'Invalid wallet address.')

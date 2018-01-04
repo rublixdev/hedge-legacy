@@ -39,11 +39,14 @@ class SignupForm(forms.Form):
 
         address = self.cleaned_data['wallet_address']
         try:
+            # Bitcoin address
             bcbytes = decode_base58(address, 25)
             if bcbytes[-4:] != sha256(sha256(bcbytes[:-4]).digest()).digest()[:4]:
                 raise ValueError()
         except Exception:
-            raise forms.ValidationError('Invalid wallet address.')
+            # Ethereum address
+            if not re.match(r'^(0x)?[0-9a-f]{40}$', address, flags=re.I):
+                raise forms.ValidationError('Invalid wallet address.')
         return address
 
     def signup(self, request, user):
