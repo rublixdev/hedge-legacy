@@ -1,5 +1,11 @@
 import os
 from .base import *
+from django.conf import settings
+
+
+#setting DJANGO_SETTING_MODULE
+settings.configure(DEBUG=True)
+
 
 # DEBUG
 # ------------------------------------------------------------------------------

@@ -42,6 +42,7 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     'apps.dashboard',
     'apps.user',
+    'apps.phone'
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -168,3 +169,8 @@ CELERY_RESULT_SERIALIZER = 'json'
 # ------------------------------------------------------------------------------
 MAILCHIMP_API_KEY = env('MAILCHIMP_API_KEY')
 MAILCHIMP_LIST_ID = env('MAILCHIMP_LIST_ID')
+
+# TWILIO CREDENTIALS 
+# ------------------------------------------------------------------------------
+TWILIO_ACCOUNT_SID =  env('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')

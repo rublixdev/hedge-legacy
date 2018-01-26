@@ -42,8 +42,8 @@ def subscribe_to_mailchimp(sender, email_address, **kwargs):
             'email_address': email_address.email,
             'status': 'subscribed',
             'merge_fields': {
-                'FNAME': email_address.user.profile.name,
-                'LNAME': '',
+                'FNAME': email_address.user.profile.first_name,
+                'LNAME': email_address.user.profile.last_name,
             }            
         })
     except Exception as e:
