@@ -12,9 +12,10 @@ ASSETS_DIR = join(dirname(dirname(abspath(__file__))), 'assets')
 
 
 class SignupFormTests(BaseTests):
-    def test_with_valid_data(self):
+    def test_with_valid_data_and_bitcoin_address(self):
         form = SignupForm({
-            'name': 'sample user',
+            'first_name': 'john',
+            'last_name': 'doe',
             'phone_number': '082141674751',
             'wallet_address': '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2',
             'date_of_birth': '1/1/1970',
@@ -23,8 +24,10 @@ class SignupFormTests(BaseTests):
 
         self.assertTrue(form.is_valid())
 
+    def test_with_valid_data_and_ether_address(self):
         form = SignupForm({
-            'name': 'sample user',
+            'first_name': 'john',
+            'last_name': 'doe',
             'phone_number': '082141674751',
             'wallet_address': '0x32Be343B94f860124dC4fEe278FDCBD38C102D88',
             'date_of_birth': '1/1/1970',
@@ -34,17 +37,24 @@ class SignupFormTests(BaseTests):
         self.assertTrue(form.is_valid())
 
     def test_name_validation(self):
-        form = SignupForm({'name': 'a'})
+        form = SignupForm({
+            'first_name': 'a',
+            'last_name': 'b',
+        })
 
         self.assertFalse(form.is_valid())
         self.assertEqual(
-            form.errors['name'][0], 
-            'Ensure this value has at least 6 characters (it has 1).',
+            form.errors['first_name'][0], 
+            'Ensure this value has at least 2 characters (it has 1).',
+        )
+        self.assertEqual(
+            form.errors['last_name'][0],
+            'Ensure this value has at least 2 characters (it has 1).',
         )
 
     def test_phone_number_validation(self):
         number_tests = [
-            ('123', 'Ensure this value has at least 12 characters (it has 3).'),
+            ('123', 'Ensure this value has at least 11 characters (it has 3).'),
             ('+62 aaa 111 222 333 444', 'Only numbers, spaces, hyphens, and parentheses allowed.'),
         ]
 

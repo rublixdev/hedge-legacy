@@ -12,8 +12,13 @@ class UserProfile(models.Model):
         User, 
         related_name='profile',
     )
-    name = models.CharField(
-        max_length=150,
+    first_name = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    last_name = models.CharField(
+        max_length=50,
         blank=True,
         null=True,
     )
@@ -41,6 +46,12 @@ class UserProfile(models.Model):
         blank=True, 
         null=True,
     )
+    SMS_activation_code = models.CharField(
+        max_length=6,
+        blank=True,
+        null=True,
+    )
+    phone_authenticated = models.BooleanField(default=False)
     website = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -10,8 +10,9 @@ from .models import UserProfile
 
 
 class SignupForm(forms.Form):
-    name = forms.CharField(min_length=6, max_length=150)
-    phone_number = forms.CharField(min_length=12, max_length=25)
+    first_name = forms.CharField(min_length=2, max_length=50)
+    last_name = forms.CharField(min_length=2, max_length=50)
+    phone_number = forms.CharField(min_length=11, max_length=25)
     wallet_address = forms.CharField()
     date_of_birth = forms.DateField()
     terms = forms.BooleanField()
@@ -50,7 +51,8 @@ class SignupForm(forms.Form):
         return address
 
     def signup(self, request, user):
-        user.profile.name = self.cleaned_data['name']
+        user.profile.first_name = self.cleaned_data['first_name']
+        user.profile.last_name = self.cleaned_data['last_name']
         user.profile.phone_number = self.cleaned_data['phone_number']
         user.profile.wallet_address = self.cleaned_data['wallet_address']
         user.profile.date_of_birth = self.cleaned_data['date_of_birth']
