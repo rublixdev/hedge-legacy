@@ -16,11 +16,18 @@
 
       <form method="post" action="{% url 'account_signup' %}" novalidate="">
         {% csrf_token %}
-        <div class="form-group {% if form.name.errors %}has-error{% endif %}">
-          <label>Full Name</label>
-          <input type="text" name="name" value="{{ form.name.value|default:'' }}" class="form-control" placeholder="First Name and Last Name" required>
-          {% if form.name.errors %}
-            <div class="help-block">{{ form.name.errors.0 }}</div>
+        <div class="form-group {% if form.first_name.errors %}has-error{% endif %}">
+          <label>First Name</label>
+          <input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}" class="form-control" placeholder="Enter your first name" required>
+          {% if form.first_name.errors %}
+            <div class="help-block">{{ form.first_name.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="form-group {% if form.last_name.errors %}has-error{% endif %}">
+          <label>Last Name</label>
+          <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}" class="form-control" placeholder="Enter your last name" required>
+          {% if form.last_name.errors %}
+            <div class="help-block">{{ form.last_name.errors.0 }}</div>
           {% endif %}
         </div>
         <div class="form-group {% if form.username.errors %}has-error{% endif %}">
