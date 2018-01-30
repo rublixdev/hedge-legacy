@@ -12,29 +12,23 @@ ASSETS_DIR = join(dirname(dirname(abspath(__file__))), 'assets')
 
 
 class SignupFormTests(BaseTests):
-    def test_with_valid_data_and_bitcoin_address(self):
-        form = SignupForm({
-            'first_name': 'john',
-            'last_name': 'doe',
-            'phone_number': '082141674751',
-            'wallet_address': '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2',
-            'date_of_birth': '1/1/1970',
-            'terms': '1',
-        })
+    def test_with_valid_data(self):
+        wallet_addresses = [
+            '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2',
+            '0x32Be343B94f860124dC4fEe278FDCBD38C102D88',
+        ]
 
-        self.assertTrue(form.is_valid())
-
-    def test_with_valid_data_and_ether_address(self):
-        form = SignupForm({
-            'first_name': 'john',
-            'last_name': 'doe',
-            'phone_number': '082141674751',
-            'wallet_address': '0x32Be343B94f860124dC4fEe278FDCBD38C102D88',
-            'date_of_birth': '1/1/1970',
-            'terms': '1',
-        })
-
-        self.assertTrue(form.is_valid())
+        for wallet in wallet_addresses:
+            form = SignupForm({
+                'first_name': 'john',
+                'last_name': 'doe',
+                'phone_country_code': '62',
+                'phone_number': '+6282141674751',
+                'wallet_address': wallet,
+                'date_of_birth': '1/1/1970',
+                'terms': '1',
+            })
+            self.assertTrue(form.is_valid())
 
     def test_name_validation(self):
         form = SignupForm({
@@ -65,24 +59,59 @@ class SignupFormTests(BaseTests):
             self.assertEqual(form.errors['phone_number'][0], errmsg)
 
     def test_bitcoin_address_validation(self):
-        form = SignupForm({'wallet_address': '1AGNa15ZQXAZUgFiqJ3i7Z2DPU2J6hW62i'})
+        form = SignupForm({
+            'wallet_address': '1AGNa15ZQXAZUgFiqJ3i7Z2DPU2J6hW62i',
+        })
 
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['wallet_address'][0], 'Invalid wallet address.')
+        self.assertEqual(
+            form.errors['wallet_address'][0], 
+            'Invalid wallet address.',
+        )
 
     def test_ethereum_address_validation(self):
-        form = SignupForm({'wallet_address': '0x32Be343B94f860124dC4fEe278FDCBD38C102D8j'})
+        form = SignupForm({
+            'wallet_address': '0x32Be343B94f860124dC4fEe278FDCBD38C102D8j',
+        })
 
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['wallet_address'][0], 'Invalid wallet address.')
+        self.assertEqual(
+            form.errors['wallet_address'][0], 
+            'Invalid wallet address.',
+        )
 
     def test_date_of_birth_validation(self):
-        form = SignupForm({'date_of_birth': '1/1/2017'})
+        form = SignupForm({
+            'date_of_birth': '1/1/2017',
+        })
 
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors['date_of_birth'][0],
             'You have to be 33 years old or older.',
+        )
+
+    def test_empty_phone_country_code(self):
+        form = SignupForm({
+            'phone_country_code': '',
+        })
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            form.errors['phone_country_code'][0],
+            'Please select the country code.',
+        )
+
+    def test_duplicate_phone_number(self):
+        form = SignupForm({
+            'phone_country_code': self.bob.profile.phone_country_code,
+            'phone_number': self.bob.profile.phone_number,
+        })
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            form.errors['phone_number'][0],
+            'A user is already registered with this phone number.',
         )
 
 

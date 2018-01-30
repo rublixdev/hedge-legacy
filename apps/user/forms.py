@@ -28,6 +28,8 @@ class SignupForm(forms.Form):
         phone_number = self.cleaned_data['phone_number']
         if not re.match(r'^\+[0-9\- ()]+$', phone_number):
             raise forms.ValidationError('Only numbers, spaces, hyphens, and parentheses allowed.')
+        elif UserProfile.objects.filter(phone_number=phone_number).count():
+            raise forms.ValidationError('A user is already registered with this phone number.')
         return phone_number
 
     def clean_date_of_birth(self):

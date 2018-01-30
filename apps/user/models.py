@@ -56,13 +56,10 @@ class UserProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        # Extract country code from phone number
-        cc = '+%s' % self.phone_country_code
-        if self.phone_number.startswith(cc):
-            self.phone_number = self.phone_number.replace(cc, '')
         # Save hashed phone number
-        b = self.phone_number.encode('utf-8')
-        self.phone_number_hash = hashlib.md5(b).hexdigest()
+        if self.phone_number:
+            b = self.phone_number.encode('utf-8')
+            self.phone_number_hash = hashlib.md5(b).hexdigest()
         super().save(*args, **kwargs)
 
     @property
