@@ -14,6 +14,8 @@ urlpatterns = [
     # E-mail
     url(r"^confirm-email/$", allauth_views.email_verification_sent,
         name="account_email_verification_sent"),
+    url(r'^confirm-phone/$', views.confirm_phone,
+        name='confirm_phone_number'),
     url(r"^confirm-email/(?P<key>[-:\w]+)/$", allauth_views.confirm_email,
         name="account_confirm_email"),
 

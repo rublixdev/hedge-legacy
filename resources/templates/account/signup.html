@@ -1,6 +1,8 @@
 {% extends 'base-unauth.html' %}
 {% load staticfiles %}
 
+{% block head_title %}Register{% endblock %}
+
 {% block content %}
   <div class="panel panel-default b-a-2 no-bg b-gray-dark">
     <div class="headerbg panel-heading text-center">
@@ -14,8 +16,9 @@
         <div class="alert alert-danger">{{ form.non_field_errors.0 }}</div>
       {% endif %}
 
-      <form method="post" action="{% url 'account_signup' %}" novalidate="">
+      <form id="form-signup" method="post" action="{% url 'account_signup' %}" novalidate="">
         {% csrf_token %}
+
         <div class="form-group {% if form.first_name.errors %}has-error{% endif %}">
           <label>First Name</label>
           <input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}" class="form-control" placeholder="Enter your first name" required>
@@ -23,6 +26,7 @@
             <div class="help-block">{{ form.first_name.errors.0 }}</div>
           {% endif %}
         </div>
+
         <div class="form-group {% if form.last_name.errors %}has-error{% endif %}">
           <label>Last Name</label>
           <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}" class="form-control" placeholder="Enter your last name" required>
@@ -30,6 +34,7 @@
             <div class="help-block">{{ form.last_name.errors.0 }}</div>
           {% endif %}
         </div>
+
         <div class="form-group {% if form.username.errors %}has-error{% endif %}">
           <label>Username</label>
           <input type="text" name="username" value="{{ form.username.value|default:'' }}" class="form-control" placeholder="Enter a Username" required>
@@ -37,6 +42,7 @@
             <div class="help-block">{{ form.username.errors.0 }}</div>
           {% endif %}
         </div>
+
         <div class="form-group {% if form.password1.errors %}has-error{% endif %}">
           <label>Password</label>
           <input type="password" name="password1" value="{{ form.password1.value|default:'' }}" class="form-control" placeholder="Enter a Password" required>
@@ -44,6 +50,7 @@
             <div class="help-block">{{ form.password1.errors.0 }}</div>
           {% endif %}
         </div>
+
         <div class="form-group {% if form.password2.errors %}has-error{% endif %}">
           <label>Repeat Password</label>
           <input type="password" name="password2" value="{{ form.password2.value|default:'' }}" class="form-control" placeholder="Repeat Password" required>
@@ -51,6 +58,7 @@
             <div class="help-block">{{ form.password2.errors.0 }}</div>
           {% endif %}
         </div>
+
         <div class="form-group {% if form.email.errors %}has-error{% endif %}">
           <label>Email</label>
           <input type="text" name="email" value="{{ form.email.value|default:'' }}" class="form-control" placeholder="Enter an Email Address" required>
@@ -58,13 +66,20 @@
             <div class="help-block">{{ form.email.errors.0 }}</div>
           {% endif %}
         </div>
-        <div class="form-group {% if form.phone_number.errors %}has-error{% endif %}">
+
+        <div class="form-group {% if form.phone_country_code.errors or form.phone_number.errors %}has-error{% endif %}">
           <label>Phone Number</label>
-          <input type="text" name="phone_number" value="{{ form.phone_number.value|default:'' }}" class="form-control" placeholder="Enter a Phone Number" required>
+          <input type="hidden" name="phone_country_code" value="{{ form.phone_country_code.value|default:'' }}">
+          <input type="hidden" name="phone_number" value="{{ form.phone_number.value|default:'' }}">
+          <input type="text" name="phone_input" value="{{ form.phone_number.value|default:'' }}" class="form-control" placeholder="Enter a Phone Number" required>
+          {% if form.phone_country_code.errors %}
+            <div class="help-block">{{ form.phone_country_code.errors.0 }}</div>
+          {% endif %}
           {% if form.phone_number.errors %}
             <div class="help-block">{{ form.phone_number.errors.0 }}</div>
           {% endif %}
         </div>
+
         <div class="form-group {% if form.wallet_address.errors %}has-error{% endif %}">
           <label>Wallet Address</label>
           <input type="text" name="wallet_address" value="{{ form.wallet_address.value|default:'' }}" class="form-control" placeholder="0x0000" required>
@@ -72,6 +87,7 @@
             <div class="help-block">{{ form.wallet_address.errors.0 }}</div>
           {% endif %}
         </div>
+
         <div class="form-group {% if form.date_of_birth.errors %}has-error{% endif %}" id="daterangepicker-container">
           <label>Date of Birth</label>
           <input type="text" class="form-control" name="date_of_birth" value="{{ form.date_of_birth.value|default:'' }}">
@@ -79,6 +95,7 @@
             <div class="help-block">{{ form.date_of_birth.errors.0 }}</div>
           {% endif %}
         </div>
+
         <div class="checkbox">
           <label>
             <input name="terms" type="checkbox" value="1" {% if form.terms.value %}checked="checked"{% endif %}> I Accept the Rublix Terms &amp; Privacy Policy
@@ -87,8 +104,11 @@
             <div class="help-block text-danger">You need check the checkbox above.</div>
           {% endif %}
         </div>
+
         <button role="button" class="btn m-b-2 btn-block btn-primary">Register</button>
+
       </form>
+
     </div>
     <div class="panel-footer b-a-0 b-r-a-0">
       <a href="{% url 'account_reset_password' %}">Forgot Password?</a>
@@ -99,7 +119,24 @@
 {% endblock %}
 
 {% block scripts %}
+  <script src="{% static 'vendor/js/intlTelInput.min.js' %}"></script>
+  <script src="{% static 'vendor/js/intlTelUtils.js' %}"></script>
   <script src="{% static 'vendor/js/moment.min.js' %}"></script>
   <script src="{% static 'vendor/js/daterangepicker.min.js' %}"></script>
   <script src="{% static 'js/date-range-picker-settings.js' %}"></script>
+  <script>
+    var phoneInput = $('input[name=phone_input]');
+    var phoneCountryCode = $('input[name=phone_country_code]');
+    var phoneNumber = $('input[name=phone_number]');
+
+    phoneInput.intlTelInput();
+    phoneInput.intlTelInput('setNumber', phoneNumber.val());
+
+    $('#form-signup').on('submit', function(e) {
+      var ccData = phoneInput.intlTelInput('getSelectedCountryData');
+      phoneCountryCode.val(ccData.dialCode);
+      phoneNumber.val(phoneInput.intlTelInput('getNumber'));
+      return true;
+    });
+  </script>
 {% endblock %}

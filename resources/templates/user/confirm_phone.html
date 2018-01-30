@@ -1,0 +1,38 @@
+{% extends 'base-unauth.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <div class="panel panel-default b-a-2 no-bg b-gray-dark">
+    <div class="headerbg panel-heading text-center">
+      <a href="#"> <img src="https://rublix.io/images/hedgea_logo.png" alt="Logo" class="m-t-3 m-b-3 h-60"></a>
+    </div>
+    <div class="panel-body">
+      <h2 class="text-center f-w-300 m-b-0" style="letter-spacing:2px;">Verify Phone Number</h2>
+      <p class="text-center m-b-3">Please enter the SMS code sent to your phone number.</p>
+      
+      {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="" novalidate="" class="form">
+        {% csrf_token %}
+        <div class="form-group {% if form.SMS_code.errors %}has-error{% endif %}">
+          <label>Verification Code</label>
+          <input type="text" name="verification_code" class="form-control" placeholder="Enter verification code" required>
+        </div>
+        <button role="button" class="btn m-b-2 btn-block btn-primary">Verify</button>
+      </form>
+    </div>
+    <div class="panel-footer b-a-0 b-r-a-0">
+      <a href="{% url 'account_signup' %}">Register</a>
+      <a href="{% url 'account_login' %}" class="pull-right">Login</a>
+    </div>
+  </div>
+  <p class="text-gray-light text-center"><strong>Hedge &#x3B1; </strong> <span class="text-gray-light">&#xA9; 2017 Rublix Development</span></p>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'vendor/js/moment.min.js' %}"></script>
+  <script src="{% static 'vendor/js/daterangepicker.min.js' %}"></script>
+  <script src="{% static 'js/date-range-picker-settings.js' %}"></script>
+{% endblock %}

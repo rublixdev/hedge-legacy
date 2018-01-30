@@ -1,4 +1,5 @@
 import hashlib
+import uuid
 from urllib.parse import urlencode
 
 from django.db import models
@@ -22,10 +23,12 @@ class UserProfile(models.Model):
         blank=True,
         null=True,
     )
+    phone_country_code = models.CharField(
+        max_length=5,
+    )
     phone_number = models.CharField(
         max_length=25,
-        blank=True,
-        null=True,
+        unique=True,
     )
     wallet_address = models.CharField(
         max_length=55,
@@ -46,15 +49,21 @@ class UserProfile(models.Model):
         blank=True, 
         null=True,
     )
-    SMS_activation_code = models.CharField(
-        max_length=6,
-        blank=True,
-        null=True,
-    )
-    phone_authenticated = models.BooleanField(default=False)
+    phone_number_hash = models.CharField(max_length=50, default=uuid.uuid4, unique=True)
+    phone_verified = models.BooleanField(default=False)
     website = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        # Extract country code from phone number
+        cc = '+%s' % self.phone_country_code
+        if self.phone_number.startswith(cc):
+            self.phone_number = self.phone_number.replace(cc, '')
+        # Save hashed phone number
+        b = self.phone_number.encode('utf-8')
+        self.phone_number_hash = hashlib.md5(b).hexdigest()
+        super().save(*args, **kwargs)
 
     @property
     def gravatar_url(self):

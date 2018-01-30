@@ -168,3 +168,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 # ------------------------------------------------------------------------------
 MAILCHIMP_API_KEY = env('MAILCHIMP_API_KEY')
 MAILCHIMP_LIST_ID = env('MAILCHIMP_LIST_ID')
+
+# TWILIO 
+# ------------------------------------------------------------------------------
+TWILIO_API_KEY = env('TWILIO_API_KEY')
