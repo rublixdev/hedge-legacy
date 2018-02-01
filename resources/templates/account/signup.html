@@ -19,7 +19,7 @@
       <form id="form-signup" method="post" action="{% url 'account_signup' %}" novalidate="">
         {% csrf_token %}
 
-        <input type="hidden" name="facebook_user_id" value="{% if form.facebook_user_id.value %}{{ form.facebook_user_id }}{% elif facebook_user_id %}{{ facebook_user_id }}{% endif %}" />
+        <input type="hidden" name="facebook_user_id" value="{% if form.facebook_user_id.value %}{{ form.facebook_user_id.value }}{% elif facebook_user_id %}{{ facebook_user_id }}{% endif %}" />
 
         <div class="form-group {% if form.first_name.errors %}has-error{% endif %}">
           <label>First Name</label>
