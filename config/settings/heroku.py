@@ -4,7 +4,7 @@ from .base import *
 
 # DEBUG
 # ------------------------------------------------------------------------------
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*'] 
 ADMINS = ['nashruddin.amin@gmail.com']
 
