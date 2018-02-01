@@ -1,11 +1,15 @@
-from django.http import HttpResponse, HttpResponseServerError
+import os
+
+from django.http import HttpResponse, JsonResponse, HttpResponseServerError
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, login
 from django.contrib import messages
 from django.dispatch import receiver
 from django.conf import settings
 from allauth.account.models import EmailAddress
 from allauth.account.signals import email_confirmed
+from requests_oauthlib import OAuth2Session
+from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 import requests
 
 from apps.dashboard.decorators import verified_user_required
@@ -75,6 +79,56 @@ def confirm_phone(request):
     return render(request, 'user/confirm_phone.html', {
         'user': profile.user,
         'error': error,
+    })
+
+
+def facebook_login(request):
+    client_id = settings.FB_OAUTH_CLIENT_ID
+    client_secret = settings.FB_OAUTH_CLIENT_SECRET
+    authorization_base_url = 'https://www.facebook.com/dialog/oauth'
+    token_url = 'https://graph.facebook.com/oauth/access_token'
+    redirect_uri = 'http://localhost:3000/user/facebook-login'
+
+    if settings.DEBUG:
+        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
+    try:
+        oauth_state = request.session['oauth_state']
+        del request.session['oauth_state']
+    except KeyError:
+        oauth_state = None
+
+    facebook = OAuth2Session(client_id, scope='email',
+                             redirect_uri=redirect_uri, state=oauth_state)
+    facebook = facebook_compliance_fix(facebook)
+
+    if request.GET.get('error') == 'access_denied':
+        return redirect('/user/login/')
+    elif not request.GET.get('code'):
+        authorization_url, state = facebook.authorization_url(authorization_base_url)
+        request.session['oauth_state'] = state
+        return redirect(authorization_url)
+    else:
+        facebook.fetch_token(token_url, client_secret=client_secret,
+                             authorization_response=request.build_absolute_uri())
+
+    r = facebook.get('https://graph.facebook.com/me?fields=first_name,last_name,email')
+    data = r.json()
+
+    try:
+        profile = UserProfile.objects.get(facebook_user_id=data.get('id'))
+        login(request, profile.user, 
+              backend='allauth.account.auth_backends.AuthenticationBackend')
+        return redirect('/')
+    except UserProfile.DoesNotExist:
+        pass
+
+    return render(request, 'account/signup.html', {
+        'facebook_user_id': data.get('id'),
+        'first_name': data.get('first_name'), 
+        'last_name': data.get('last_name'), 
+        'email': data.get('email'), 
+        'date_of_birth': data.get('birthday'),
     })
 
 

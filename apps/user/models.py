@@ -49,6 +49,11 @@ class UserProfile(models.Model):
         blank=True, 
         null=True,
     )
+    facebook_user_id = models.CharField(
+        max_length=25, 
+        blank=True, 
+        null=True,
+    )
     phone_number_hash = models.CharField(max_length=50, default=uuid.uuid4, unique=True)
     phone_verified = models.BooleanField(default=False)
     website = models.URLField(blank=True, null=True)

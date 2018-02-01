@@ -172,3 +172,17 @@ MAILCHIMP_LIST_ID = env('MAILCHIMP_LIST_ID')
 # TWILIO 
 # ------------------------------------------------------------------------------
 TWILIO_API_KEY = env('TWILIO_API_KEY')
+
+# OAUTH SETTINGS - GOOGLE
+# ------------------------------------------------------------------------------
+GG_OAUTH_CLIENT_SECRETS_FILE = 'json/client_secret.json'
+GG_OAUTH_SCOPES = ['openid']
+
+GG_OAUTH_API_SERVICE_NAME= 'plus'
+GG_OAUTH_API_VERSION = 'v1'
+
+# OAUTH SETTINGS - FACEBOOK
+# ------------------------------------------------------------------------------
+FB_OAUTH_CLIENT_ID = env('FB_OAUTH_CLIENT_ID')
+FB_OAUTH_CLIENT_SECRET = env('FB_OAUTH_CLIENT_SECRET')
+

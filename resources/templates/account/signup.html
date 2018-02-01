@@ -19,9 +19,11 @@
       <form id="form-signup" method="post" action="{% url 'account_signup' %}" novalidate="">
         {% csrf_token %}
 
+        <input type="hidden" name="facebook_user_id" value="{% if form.facebook_user_id.value %}{{ form.facebook_user_id }}{% elif facebook_user_id %}{{ facebook_user_id }}{% endif %}" />
+
         <div class="form-group {% if form.first_name.errors %}has-error{% endif %}">
           <label>First Name</label>
-          <input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}" class="form-control" placeholder="Enter your first name" required>
+          <input type="text" name="first_name" value="{% if form.first_name.value %}{{ form.first_name.value }}{% elif first_name %}{{ first_name }}{% endif %}" class="form-control" placeholder="Enter your first name" required>
           {% if form.first_name.errors %}
             <div class="help-block">{{ form.first_name.errors.0 }}</div>
           {% endif %}
@@ -29,7 +31,7 @@
 
         <div class="form-group {% if form.last_name.errors %}has-error{% endif %}">
           <label>Last Name</label>
-          <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}" class="form-control" placeholder="Enter your last name" required>
+          <input type="text" name="last_name" value="{% if form.last_name.value %}{{ form.last_name.value }}{% elif last_name %}{{ last_name }}{% endif %}" class="form-control" placeholder="Enter your last name" required>
           {% if form.last_name.errors %}
             <div class="help-block">{{ form.last_name.errors.0 }}</div>
           {% endif %}
@@ -61,7 +63,7 @@
 
         <div class="form-group {% if form.email.errors %}has-error{% endif %}">
           <label>Email</label>
-          <input type="text" name="email" value="{{ form.email.value|default:'' }}" class="form-control" placeholder="Enter an Email Address" required>
+          <input type="text" name="email" value="{% if form.email.value %}{{ form.email.value }}{% elif email %}{{ email }}{% endif %}" class="form-control" placeholder="Enter an Email Address" required>
           {% if form.email.errors %}
             <div class="help-block">{{ form.email.errors.0 }}</div>
           {% endif %}
@@ -90,7 +92,7 @@
 
         <div class="form-group {% if form.date_of_birth.errors %}has-error{% endif %}" id="daterangepicker-container">
           <label>Date of Birth</label>
-          <input type="text" class="form-control" name="date_of_birth" value="{{ form.date_of_birth.value|default:'' }}">
+          <input type="text" class="form-control" name="date_of_birth" value="{% if form.date_of_birth.value %}{{ form.date_of_birth.value }}{% elif date_of_birth %}{{ date_of_birth }}{% endif %}">
           {% if form.date_of_birth.errors %}
             <div class="help-block">{{ form.date_of_birth.errors.0 }}</div>
           {% endif %}

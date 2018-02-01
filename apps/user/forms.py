@@ -16,6 +16,7 @@ class SignupForm(forms.Form):
     phone_number = forms.CharField(min_length=11, max_length=25)
     wallet_address = forms.CharField()
     date_of_birth = forms.DateField()
+    facebook_user_id = forms.CharField(required=False)
     terms = forms.BooleanField()
 
     def clean_phone_country_code(self):
@@ -59,6 +60,12 @@ class SignupForm(forms.Form):
                 raise forms.ValidationError('Invalid wallet address.')
         return address
 
+    def clean_facebook_user_id(self):
+        uid = self.cleaned_data['facebook_user_id']
+        if uid and UserProfile.objects.filter(facebook_user_id=uid).count():
+            raise forms.ValidationError('A user is already registered with this Facebook ID.')
+        return uid
+
     def signup(self, request, user):
         user.profile.first_name = self.cleaned_data['first_name']
         user.profile.last_name = self.cleaned_data['last_name']
@@ -66,6 +73,7 @@ class SignupForm(forms.Form):
         user.profile.phone_number = self.cleaned_data['phone_number']
         user.profile.wallet_address = self.cleaned_data['wallet_address']
         user.profile.date_of_birth = self.cleaned_data['date_of_birth']
+        user.profile.facebook_user_id = self.cleaned_data['facebook_user_id']
         user.profile.save()
 
 

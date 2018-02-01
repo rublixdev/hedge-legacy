@@ -10,6 +10,7 @@ urlpatterns = [
     url(r"^signup/$", allauth_views.signup, name="account_signup"),
     url(r"^login/$", allauth_views.login, name="account_login"),
     url(r"^logout/$", allauth_views.logout, name="account_logout"),
+    url(r'^facebook-login/$', views.facebook_login, name='facebook_login'),
 
     # E-mail
     url(r"^confirm-email/$", allauth_views.email_verification_sent,
