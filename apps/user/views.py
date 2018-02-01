@@ -87,7 +87,7 @@ def facebook_login(request):
     client_secret = settings.FB_OAUTH_CLIENT_SECRET
     authorization_base_url = 'https://www.facebook.com/dialog/oauth'
     token_url = 'https://graph.facebook.com/oauth/access_token'
-    redirect_uri = 'http://localhost:3000/user/facebook-login'
+    redirect_uri = '%s://%s/user/facebook-login' % (request.scheme, request.get_host())
 
     if settings.DEBUG:
         os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
